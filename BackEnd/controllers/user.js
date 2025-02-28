@@ -1,16 +1,31 @@
-// const User = require("../models/user");
-// const user = require("../user.json");
-// async function handleuser(req, res) {
-//   return await res.json(user);
-// }
-// async function handlepostuser(req, res) {
-//   return User.find({}); 
-// }
-// async function handlepostuser(req, res) {
-//     await User.create({
-//         username : req.body.username,
-//         email: req.body.email,
-//         password: req.body.password 
-//       });
-// }
-// module.exports = { handleuser, handlepostuser };
+const nodemailer = require("nodemailer");
+const sendMail = (email,login_url) => {
+  try{
+      const auth = nodemailer.createTransport({
+        service: "gmail",
+        secure: true,
+        port: 465,
+        auth: {
+          user: "shreyponkiya@gmail.com",
+          pass: "oxxl zygk qofk atlm",
+        },
+      });
+      const receiver = {
+        from: "ssponkiya612@gmail.com",
+        to: email, 
+        subject: "WelCome Mail",
+        text: `WelCome Our FAQ's Management  Click on this URL :  ${login_url}`,
+      };
+      auth.sendMail(receiver, (error, emailResponse) => {
+        if (error) throw error;
+        console.log("success!");
+        response.end();
+      });
+    
+  }catch(err){
+    console.log(err)
+  }
+  };
+  
+  module.exports = sendMail;
+  

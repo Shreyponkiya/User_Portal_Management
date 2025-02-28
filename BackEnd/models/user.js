@@ -10,6 +10,10 @@ const Schema = new mongoose.Schema({
     unique: true,
     required: true,
   },
+  verify:{
+    type:Boolean,
+    default:false
+  },
   password: {
     type: String || Number,
     required: true,
