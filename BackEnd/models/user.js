@@ -10,12 +10,16 @@ const Schema = new mongoose.Schema({
     unique: true,
     required: true,
   },
-  verify:{
-    type:Boolean,
-    default:false
+  verify: {
+    type: Boolean,
+    default: false,
   },
   password: {
     type: String || Number,
+    required: true,
+  },
+  category: {
+    type: Boolean,
     required: true,
   },
   password1: {

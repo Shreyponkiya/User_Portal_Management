@@ -7,8 +7,6 @@ const cron = require("node-cron");
 
 const secret_key = "ShreyPonkiya@1011";
 
-// Get all users
-
 router.get("/", async (req, res) => {
   try {
     const data = await User.find();
@@ -21,26 +19,41 @@ router.get("/", async (req, res) => {
 
 router.post("/add", async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    const { username, email, password, category } = req.body;
+
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "This email is already registered." });
+    }
+
+    console.log("Category:", category);
+
     const login_url = `http://localhost:4000/user/verify/${jwt.sign(
       { email },
       secret_key
     )}`;
 
-    const newUser = new User({ username, email, password, isVerified: false });
+    const newUser = new User({
+      username,
+      email,
+      password,
+      category,
+      isVerified: false,
+    });
+
     await newUser.save();
     sendMail(email, login_url);
+
     cron.schedule("0 0 * * *", () => {
       sendMail(email, login_url);
     });
-    res
-      .status(201)
-      .json({ message: "User registered. Verification email sent." });
+
+    res.status(201).json({ message: "User registered. Verification email sent." });
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 });
-
 router.get("/verify/:token", async (req, res) => {
   try {
     const { token } = req.params;
